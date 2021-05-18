@@ -1,5 +1,6 @@
-import jetbrains.buildServer.configs.kotlin.v2019_2.*
-import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.v2019_2.DslContext
+import jetbrains.buildServer.configs.kotlin.v2019_2.project
+import jetbrains.buildServer.configs.kotlin.v2019_2.version
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -26,19 +27,17 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2020.2"
 
 project {
+    val repoName = DslContext.getParameter("repoName")
+    val useDev = DslContext.getParameter("useDev", "false")
 
-    buildType(Build)
+    val master = CommonRoot(repoName, BranchType.Master)
+    val dev = CommonRoot(repoName, BranchType.Dev)
+
+    vcsRoot(master)
+    buildType(RunBuildScript(master))
+
+    if (useDev.equals("true", true)) {
+        vcsRoot(dev)
+        subProject(DevProj(dev))
+    }
 }
-
-object Build : BuildType({
-    name = "Build"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    triggers {
-        vcs {
-        }
-    }
-})
