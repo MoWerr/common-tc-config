@@ -16,7 +16,7 @@ open class RunBuildScript(vcsRoot: CommonRoot) : BuildType({
 
     steps {
         exec {
-            name = "Build image"
+            name = "Run build script"
             path = "build.sh"
             formatStderrAsError = true
         }
