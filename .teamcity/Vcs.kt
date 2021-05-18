@@ -11,8 +11,11 @@ open class CommonRoot(val repoName: String, val branchType: BranchType) : GitVcs
     branchSpec = "+:refs/heads/*"
     userForTags = "tc_mower"
 
-    authMethod = password {
-        userName = "MoWerr"
-        password = DslContext.getParameter("credentialToken", "")
+    val gitCredentialToken = DslContext.getParameter("gitCredentialToken", "")
+    if (gitCredentialToken.isNotBlank()) {
+        authMethod = password {
+            userName = "MoWerr"
+            password = gitCredentialToken
+        }
     }
 })
